@@ -69,9 +69,10 @@ def main():
 					if move in validMoves: # verifica se o movimento é valido
 						gs.makeMove(move)
 						moveMade = True 
-					sqSelected = () # reset ao click do utilizador
-					playerClicks = [] # reset à lista de cliques	
-					
+						sqSelected = () # reset ao click do utilizador
+						playerClicks = [] # reset à lista de cliques	
+					else:
+						playerClicks = [sqSelected]
 			# cliques de teclas		
 			elif e.type == pg.KEYDOWN:
 				if e.key == pg.K_z: # voltar atras quando a tecla "z" é clicada

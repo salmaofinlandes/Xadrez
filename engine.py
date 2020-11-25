@@ -19,18 +19,25 @@ class Engine:
 			["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
 			["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
 		
-		self.whiteMove = True
-		self.log = []
-		
 		self.moveFunction = {'P': self.getPawnMoves,'R': self.getRookMoves,'N': self.getKnightMoves,
 							 'B': self.getBishopMoves,'Q': self.getQueenMoves,'K': self.getKingMoves}
+		
+		self.whiteMove = True
+		self.log = []
+		self.whiteKing = (7,4)
+		self.blackKing = (0,4)
+		self.checkMate = False
+		self.staleMate = False
 		
 	def makeMove(self, move): # toma um movimento como parametro e executa-o (nao funciona com roque, en passant nem promocao de peoes)
 		self.board[move.startRow][move.startCol] = "__"
 		self.board[move.endRow][move.endCol] = move.pieceMoved
 		self.log.append(move)
 		self.whiteMove = not self.whiteMove # troca a vez de jogar
-		
+		if move.pieceMoved == "wK":
+			self.whiteKing = (move.endRow, move.endCol)
+		elif move.pieceMoved == "bK":
+			self.blackKing = (move.endRow, move.endCol)
 		
 	def undoMove(self):
 		if len(self.log) != 0: #ter a certeza que existe um mov para voltar atras
@@ -38,12 +45,59 @@ class Engine:
 			self.board[move.startRow][move.startCol] = move.pieceMoved
 			self.board[move.endRow][move.endCol] = move.pieceCaptured
 			self.whiteMove = not self.whiteMove
+			if move.pieceMoved == "wK":
+				self.whiteKing = (move.startRow, move.startCol)
+			elif move.pieceMoved == "bK":
+				self.blackKing = (move.startRow, move.startCol)
+			
 	
 	
 	# Todos os movimentos considerando os xeques
 	def getValidMoves(self):
-		return self.getAllPossibleMoves()
+		# 1 - gerar todos os movimentos válidos
+		moves = self.getAllPossibleMoves()
+		# 2 - para cada movimento, faze-lo
+		for i in range(len(moves)-1, -1, -1): # mover os elementos a partir do fim
+			self.makeMove(moves[i])
+			self.whiteMove = not self.whiteMove
+			# 3 - gerar todos os movimentos do openente
+			# 4 - para cada movimento do oponente, ver se eles atacam o rei
+			if self.inCheck():
+				moves.remove(moves[i]) # 5 - se atacarem o rei, nao sao validos
+			self.whiteMove = not self.whiteMove	
+			self.undoMove()
+		
+		if len(moves) == 0: #xeque-mate ou afogado
+			if self.inCheck:
+				self.checkMate = True
+				if self.whiteMove:
+					print("pretas ganharam por xeque mate")
+				else:
+					print("brancas ganharam por xeque mate")
+			else:
+				self.staleMate = True
+		else:
+			self.checkMate = False
+			self.staleMate = False		
+			
+		return moves
+		
+	def inCheck(self):
+		if self.whiteMove:
+			return self.squareUnderAttack(self.whiteKing[0],self.whiteKing[1])
+		else:
+			return self.squareUnderAttack(self.blackKing[0],self.blackKing[1])
 	
+	def squareUnderAttack(self,r,c):
+		self.whiteMove = not self.whiteMove # mudar a vez de jogar
+		oppMoves = self.getAllPossibleMoves()
+		self.whiteMove = not self.whiteMove
+		for move in oppMoves:
+			if move.endRow == r and move.endCol == c:
+				return True
+		return False
+		
+		
 	
 	# Todos os movimentos sem considerar xeques
 	def getAllPossibleMoves(self):
