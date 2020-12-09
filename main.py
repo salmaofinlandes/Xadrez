@@ -1,6 +1,5 @@
 """
-Main.py	
-																											
+Main.py																											
 - lida com o input		
 - mostra o objeto 'Engine' através de uma interface grafica utilizando a biblioteca pygame 																				
 """
@@ -9,7 +8,7 @@ os.environ['SDL_AUDIODRIVER'] = 'dsp'
 # resolve o erro: 'ALSA lib pcm.c:8526:(snd_pcm_recover) underrun occurred'
 
 import pygame as pg 
-from engine import Engine, Move # importar a classe Engine
+from engine import Engine, Move # importar a classe Engine e Move
 
 #declaracao de constantes
 IMG={}
@@ -23,7 +22,7 @@ def load_img():
 	for piece in pieces:
 		IMG[piece] = pg.transform.scale(pg.image.load("images/"+piece+".png"), (SQUARE, SQUARE)) # carrega as img no tamanho desejado
 
-
+#funcao principal
 
 def main():
 	pg.init()
@@ -33,16 +32,17 @@ def main():
 	screen.fill(pg.Color("white"))
 	gs = Engine()
 	
-	validMoves = gs.getValidMoves() # lista de mov validos usada para comparar mov do user aos válidos
-	moveMade = False # variavel usada para nao ter que chamar o metodo getAllValidMoves() a cada frame 
+	validMoves = gs.getValidMoves() # lista de mov validos usada para comparar movimentos do utilizador aos válidos
+	moveMade = False # variavel usada para nao ter que chamar o metodo getAllValidMoves() a cada frame mas apenas quando um movimento é feito
 					 # melhorando a performance significativamente
 	
 	
 	load_img()
-	running = True
+	running = True # varíavel para controlar o loop principal
 	sqSelected = () # mantem registo do ultimo clique do utilizador. Vazia inicialmente
 	playerClicks = [] # mantem o registo dos 2 ultimos cliques do utilizador. len(playerClicks) <= 2
-	# Main game loop
+	
+	# LOOP DE JOGO
 	while running:
 		for e in pg.event.get():
 			if e.type == pg.QUIT:
@@ -62,17 +62,18 @@ def main():
 					sqSelected = (row, col)
 					playerClicks.append(sqSelected)
 					
-				if len(playerClicks) == 2: # verifica se a lista já está cheia
-					move = Move(playerClicks[0], playerClicks[1], gs.board) # user faz o movimento (gera o objeto "move")
-					print(move.Notation())
-					
-					if move in validMoves: # verifica se o movimento é valido
-						gs.makeMove(move)
-						moveMade = True 
-						sqSelected = () # reset ao click do utilizador
-						playerClicks = [] # reset à lista de cliques	
-					else:
-						playerClicks = [sqSelected]
+				if len(playerClicks) == 2: # verifica se a lista já está cheia (verifica se o movimento já foi feito ou não)
+					move = Move(playerClicks[0], playerClicks[1], gs.board) # user faz um movimento (pode ou não ser válido)
+					for i in range(len(validMoves)):
+						if move == validMoves[i]: # verifica se o movimento é valido
+							print(move.Notation())
+							gs.makeMove(move) # se for válido, faz o movimento
+							moveMade = True 
+							sqSelected = () # reset ao click do utilizador
+							playerClicks = [] # reset à lista de cliques	
+						if not moveMade:
+							playerClicks = [sqSelected]
+			
 			# cliques de teclas		
 			elif e.type == pg.KEYDOWN:
 				if e.key == pg.K_z: # voltar atras quando a tecla "z" é clicada
@@ -80,8 +81,8 @@ def main():
 					moveMade = True # atualiza a lista de movimentos validos
 		
 		if moveMade: # se o movimento tiver sido realizado chama a funcao getValidMoves()
-			validMoves = gs.getValidMoves()
-			moveMade = False
+			validMoves = gs.getValidMoves() # atualiza a lista de movimentos válidos visto que o tabuleiro mudou (foi feito um movimento)
+			moveMade = False # reset à variavel 
 			
 		draw_game_state(screen, gs)
 		clock.tick(15) # programa corre a um max de 15 fps
@@ -90,7 +91,7 @@ def main():
 		
 		
 def draw_game_state(screen, gs):
-	draw_board(screen) 
+	draw_board(screen) # desenha o tabuleiro ANTES das peças
 	draw_pieces(screen, gs.board)
 
 
@@ -113,6 +114,7 @@ def draw_pieces(screen, board):
 			if piece != "__": # verifica se existe uma peça nesse lugar ou se está vazio ("__")
 				screen.blit(IMG[piece], pg.Rect(c*SQUARE, r*SQUARE, SQUARE, SQUARE))
 				
+
 if __name__ == "__main__":
 	main()		
 		
