@@ -235,7 +235,7 @@ class Engine:
 		else:
 			enemy = 'w'
 			
-		for i in range(1,7):
+		for i in range(1,8):
 			if r-i >= 0 and c-i >= 0:
 				if self.board[r-i][c-i] == "__":
 					moves.append(Move((r,c),(r-i,c-i), self.board))
@@ -245,7 +245,7 @@ class Engine:
 				else:
 					break
 		
-		for i in range(1,7):
+		for i in range(1,8):
 			if r-i >= 0 and c+i <= 7:
 				if self.board[r-i][c+i] == "__":
 					moves.append(Move((r,c),(r-i,c+i), self.board))
@@ -255,7 +255,7 @@ class Engine:
 				else:
 					break
 					
-		for i in range(1,7):
+		for i in range(1,8):
 			if r+i <= 7 and c-i >= 0:
 				if self.board[r+i][c-i] == "__":
 					moves.append(Move((r,c),(r+i,c-i), self.board))
@@ -265,7 +265,7 @@ class Engine:
 				else:
 					break
 					
-		for i in range(1,7):
+		for i in range(1,8):
 			if r+i <= 7 and c+i <= 7:
 				if self.board[r+i][c+i] == "__":
 					moves.append(Move((r,c),(r+i,c+i), self.board))
