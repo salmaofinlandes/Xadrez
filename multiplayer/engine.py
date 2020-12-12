@@ -13,7 +13,7 @@ class Engine:
 			["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
 			["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
 			["__", "__", "__", "__", "__", "__", "__", "__"], 
-			["__", "__", "__", "__", "__", "__", "__", "wR"],  # Tabuleiro é uma matrix bidemensional
+			["__", "__", "__", "__", "__", "__", "__", "__"],  # Tabuleiro é uma matrix bidemensional
 			["__", "__", "__", "__", "__", "__", "__", "__"],  # 1ª letra representa a cor (b,w) 
 			["__", "__", "__", "__", "__", "__", "__", "__"],  # 2ª letra representa o tipo (tower(T), knight(N), bishop(B), queen(Q), king(K), pawn(P) 
 			["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
