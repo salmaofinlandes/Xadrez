@@ -13,7 +13,7 @@ class Engine:
 			["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
 			["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
 			["__", "__", "__", "__", "__", "__", "__", "__"], 
-			["__", "__", "__", "__", "__", "__", "__", "__"],  # Tabuleiro é uma matrix bidemensional
+			["__", "__", "__", "__", "__", "__", "__", "wR"],  # Tabuleiro é uma matrix bidemensional
 			["__", "__", "__", "__", "__", "__", "__", "__"],  # 1ª letra representa a cor (b,w) 
 			["__", "__", "__", "__", "__", "__", "__", "__"],  # 2ª letra representa o tipo (tower(T), knight(N), bishop(B), queen(Q), king(K), pawn(P) 
 			["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
@@ -153,7 +153,7 @@ class Engine:
 			enemy = 'b'
 		else:
 			enemy = 'w'	
-		for i in range(1,7):
+		for i in range(1,8):
 			if r-i >= 0:
 				if self.board[r-i][c] == "__":
 					moves.append(Move((r,c),(r-i,c), self.board))
@@ -162,7 +162,7 @@ class Engine:
 					break	
 				else:
 					break
-		for i in range(1,7):
+		for i in range(1,8):
 			if r+i <= 7:
 				if self.board[r+i][c] == "__":
 					moves.append(Move((r,c),(r+i,c), self.board))
@@ -171,7 +171,7 @@ class Engine:
 					break	
 				else:
 					break
-		for i in range(1,7):
+		for i in range(1,8):
 			if c-i >= 0:
 				if self.board[r][c-i] == "__":
 					moves.append(Move((r,c),(r,c-i), self.board))
@@ -180,7 +180,7 @@ class Engine:
 					break	
 				else:
 					break
-		for i in range(1,7):
+		for i in range(1,8):
 			if c+i <= 7:
 				if self.board[r][c+i] == "__":
 					moves.append(Move((r,c),(r,c+i), self.board))
