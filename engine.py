@@ -39,6 +39,13 @@ class Engine:
 		elif move.pieceMoved == "bK":
 			self.blackKing = (move.endRow, move.endCol)
 		
+		#pawn promotion
+		if move.isPawnPromotion:
+			self.board[move.endRow][move.endCol] = move.pieceMoved[0] + 'Q' # promocao a uma rainha
+		
+		
+		
+		
 	def undoMove(self):
 		if len(self.log) != 0: #ter a certeza que existe um mov para voltar atras
 			move = self.log.pop()
@@ -146,7 +153,7 @@ class Engine:
 			enemy = 'b'
 		else:
 			enemy = 'w'	
-		for i in range(1,7):
+		for i in range(1,8):
 			if r-i >= 0:
 				if self.board[r-i][c] == "__":
 					moves.append(Move((r,c),(r-i,c), self.board))
@@ -155,7 +162,7 @@ class Engine:
 					break	
 				else:
 					break
-		for i in range(1,7):
+		for i in range(1,8):
 			if r+i <= 7:
 				if self.board[r+i][c] == "__":
 					moves.append(Move((r,c),(r+i,c), self.board))
@@ -164,7 +171,7 @@ class Engine:
 					break	
 				else:
 					break
-		for i in range(1,7):
+		for i in range(1,8):
 			if c-i >= 0:
 				if self.board[r][c-i] == "__":
 					moves.append(Move((r,c),(r,c-i), self.board))
@@ -173,7 +180,7 @@ class Engine:
 					break	
 				else:
 					break
-		for i in range(1,7):
+		for i in range(1,8):
 			if c+i <= 7:
 				if self.board[r][c+i] == "__":
 					moves.append(Move((r,c),(r,c+i), self.board))
@@ -351,6 +358,10 @@ class Move:
 		self.pieceMoved = board[self.startRow][self.startCol]
 		self.pieceCaptured = board[self.endRow][self.endCol]
 		self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
+		self.isPawnPromotion = False
+		if (self.pieceMoved == "wP" and self.endRow ==0) or (self.pieceMoved == "bP" and self.endRow ==7):
+			self.isPawnPromotion = True
+			
 		
 	def __eq__(self, other):
 		if isinstance(other, Move):
